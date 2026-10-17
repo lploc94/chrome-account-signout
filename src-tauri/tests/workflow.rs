@@ -195,3 +195,88 @@ fn busy_sqlite_does_not_turn_close_into_success() {
     assert_eq!(result.phase, "error");
     assert_eq!(f.rows().len(), 3);
 }
+
+#[test]
+fn cached_selection_closes_before_database_access_and_revalidates_after_close() {
+    struct LockedBrowser {
+        writer: rusqlite::Connection,
+        fixture: fixtures::Fixture,
+        closed: AtomicBool,
+        change_identity: bool,
+    }
+    impl BrowserControl for LockedBrowser {
+        fn was_running(&self) -> Result<bool> {
+            Ok(true)
+        }
+        fn close(&self, _: &AtomicBool) -> Result<()> {
+            self.writer.execute_batch("ROLLBACK").unwrap();
+            if self.change_identity {
+                self.fixture.metadata("target");
+            }
+            self.closed.store(true, Ordering::Release);
+            Ok(())
+        }
+        fn stopped(&self) -> Result<bool> {
+            Ok(self.closed.load(Ordering::Acquire))
+        }
+        fn reopen(&self, _: &str) -> Result<()> {
+            Ok(())
+        }
+    }
+    for (selection_id, change_identity) in [("target", false), ("target", true), ("expired", false)]
+    {
+        let f = fixtures::Fixture::new();
+        let before = f.full_rows();
+        let writer = f.db();
+        writer.execute_batch("BEGIN EXCLUSIVE").unwrap();
+        let inventory = f.inventory();
+        let profile = inventory.load_metadata().unwrap().remove(0);
+        let account = profile
+            .accounts
+            .iter()
+            .find(|a| a.gaia_id == selection_id)
+            .unwrap()
+            .clone();
+        let binding = Binding {
+            root: f.root.clone(),
+            selection: signout_core::Selection { profile, account },
+        };
+        let guard = chrome_platform::NativeLock::new(f.temp.path().join("operation.lock"))
+            .acquire()
+            .unwrap();
+        let b = LockedBrowser {
+            writer,
+            fixture: f,
+            closed: AtomicBool::new(false),
+            change_identity,
+        };
+        let result = perform(
+            &binding,
+            &inventory,
+            guard.as_ref(),
+            &b,
+            &AtomicBool::new(false),
+            &|| Ok(()),
+            &|| Ok(()),
+        );
+        assert!(b.closed.load(Ordering::Acquire));
+        if change_identity {
+            assert_eq!(result.phase, "error");
+            assert_eq!(b.fixture.full_rows(), before);
+        } else {
+            assert_eq!(result.phase, "done");
+            if selection_id == "expired" {
+                assert!(result.message.contains("đã được gỡ trước đó"));
+                assert_eq!(b.fixture.full_rows(), before);
+            } else {
+                assert_eq!(
+                    b.fixture.full_rows(),
+                    before
+                        .into_iter()
+                        .filter(|r| r.0 != "AccountId-target")
+                        .collect::<Vec<_>>()
+                );
+            }
+        }
+    }
+}

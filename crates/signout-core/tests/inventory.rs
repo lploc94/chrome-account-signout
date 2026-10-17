@@ -108,3 +108,29 @@ fn locked_database_reports_access_error_instead_of_unsupported_format() {
     writer.execute_batch("ROLLBACK").unwrap();
     assert_eq!(f.inventory().load().unwrap()[0].accounts.len(), 3);
 }
+
+#[test]
+fn display_metadata_does_not_open_locked_or_missing_token_database() {
+    let f = Fixture::new();
+    let writer = f.db();
+    writer.execute_batch("BEGIN EXCLUSIVE").unwrap();
+    let profile = f.inventory().load_metadata().unwrap().remove(0);
+    assert!(profile.unavailable_reason.is_none());
+    assert_eq!(profile.accounts.len(), 4);
+    assert!(
+        profile
+            .accounts
+            .iter()
+            .any(|a| a.gaia_id == "target" && !a.is_primary)
+    );
+    assert!(
+        profile
+            .accounts
+            .iter()
+            .any(|a| a.gaia_id == "primary" && a.is_primary)
+    );
+    writer.execute_batch("ROLLBACK").unwrap();
+    drop(writer);
+    std::fs::remove_file(f.root.join("Default/Web Data")).unwrap();
+    assert_eq!(f.inventory().load_metadata().unwrap()[0].accounts.len(), 4);
+}

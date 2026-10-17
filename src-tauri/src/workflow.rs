@@ -384,7 +384,7 @@ impl Runtime for NativeRuntime {
         let root = chrome_platform::canonical(&chrome_platform::standard_root()?)?;
         chrome_platform::discover(&root)?;
         Ok(Loaded {
-            profiles: Inventory::new(&root)?.load()?,
+            profiles: Inventory::new(&root)?.load_metadata()?,
             root,
         })
     }

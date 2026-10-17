@@ -18,8 +18,10 @@ Chrome có thể thay đổi định dạng dữ liệu; ứng dụng từ chố
 gốc được chuyển bằng liên kết. Không hỗ trợ chọn user-data-dir tùy ý, Beta/Canary,
 Edge hoặc tài khoản đồng bộ chính.
 - Không cần mật khẩu Google; không giải mã token; không gửi dữ liệu tài khoản ra mạng.
-Nếu Chrome khóa cơ sở dữ liệu lúc tải danh sách, hãy lưu công việc, thoát Chrome rồi
-nhấn tải lại trong app. Lỗi khóa/truy cập được báo riêng với lỗi định dạng dữ liệu.
+Danh sách lấy từ thông tin hồ sơ nên vẫn hiển thị khi Chrome đang mở; có thể còn
+mục đã đăng xuất. App chỉ yêu cầu Chrome đóng sau khi bạn xác nhận Logout, rồi
+kiểm tra lại danh tính và dữ liệu trước khi gỡ. Nếu Chrome vẫn giữ khóa sau đó,
+app từ chối sửa và hướng dẫn đóng Chrome thủ công.
 Nếu hệ điều hành chặn đọc dữ liệu, người dùng tự quyết định cấp quyền.
 
 Mọi dữ liệu ví dụ/test đều được tạo giả, chẳng hạn `friend@example.test`.

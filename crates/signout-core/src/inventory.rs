@@ -127,7 +127,16 @@ impl Inventory {
             unavailable_reason: None,
         })
     }
+    /// Confirmed token inventory for callers that require readable Web Data.
     pub fn load(&self) -> Result<Vec<Profile>> {
+        self.load_profiles(true)
+    }
+    /// Display-only cached metadata. Presence here never authorizes a database write.
+    /// Chrome may keep Web Data locked; mutation revalidates after it has stopped.
+    pub fn load_metadata(&self) -> Result<Vec<Profile>> {
+        self.load_profiles(false)
+    }
+    fn load_profiles(&self, check_tokens: bool) -> Result<Vec<Profile>> {
         let cache = self.cache()?;
         let mut folders: Vec<_> = cache.keys().collect();
         folders.sort();
@@ -135,10 +144,12 @@ impl Inventory {
         for folder in folders {
             let loaded = (|| {
                 let mut p = self.metadata_from(folder, &cache[folder])?;
-                let db = TokenStore::open(&self.safe_file(folder, "Web Data")?, false)?;
-                let services = db.services()?;
-                p.accounts
-                    .retain(|a| services.contains(&format!("AccountId-{}", a.gaia_id)));
+                if check_tokens {
+                    let db = TokenStore::open(&self.safe_file(folder, "Web Data")?, false)?;
+                    let services = db.services()?;
+                    p.accounts
+                        .retain(|a| services.contains(&format!("AccountId-{}", a.gaia_id)));
+                }
                 Ok(p)
             })();
             result.push(loaded.unwrap_or_else(|e: Error| Profile {

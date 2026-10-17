@@ -16,3 +16,5 @@ describe('account logout interface',()=>{
 });
 
 it('keeps tracking an operation after a transient status error',async()=>{await setup();document.querySelector<HTMLButtonElement>('button[data-account="friend-id"]')!.click();await flush();vi.mocked(api.status).mockRejectedValueOnce('Không đọc được trạng thái.');click('Đồng ý Logout');await flush();expect(document.querySelector<HTMLButtonElement>('#refresh')!.disabled).toBe(true);await vi.advanceTimersByTimeAsync(250);expect(api.status).toHaveBeenCalledTimes(2);expect(document.querySelector<HTMLButtonElement>('#cancel-operation')!.hidden).toBe(false)});
+
+it('explains cached display and does not start logout when loading accounts',async()=>{await setup();expect(document.body.textContent).toContain('Danh sách từ hồ sơ có thể chưa cập nhật');expect(api.prepare).not.toHaveBeenCalled();expect(api.confirm).not.toHaveBeenCalled()});
