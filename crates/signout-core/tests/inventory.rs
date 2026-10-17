@@ -93,3 +93,18 @@ fn intermediate_folder_spelling_cannot_alias_another_selection() {
     let f = Fixture::new();
     assert!(f.inventory().safe_file("dEfAuLt", "Web Data").is_err());
 }
+
+#[test]
+fn locked_database_reports_access_error_instead_of_unsupported_format() {
+    let f = Fixture::new();
+    let writer = f.db();
+    writer.execute_batch("BEGIN EXCLUSIVE").unwrap();
+    let profile = f.inventory().load().unwrap().remove(0);
+    assert_eq!(
+        profile.unavailable_reason,
+        Some(signout_core::Error::Storage.to_string())
+    );
+    assert!(profile.accounts.is_empty());
+    writer.execute_batch("ROLLBACK").unwrap();
+    assert_eq!(f.inventory().load().unwrap()[0].accounts.len(), 3);
+}

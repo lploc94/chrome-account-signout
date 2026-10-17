@@ -1,0 +1,25 @@
+[package]
+name = "chrome-account-signout"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "chrome_account_signout_lib"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde.workspace = true
+signout-core = { path = "../crates/signout-core" }
+chrome-platform = { path = "../crates/chrome-platform" }
+uuid = { version = "1", features = ["v4"] }
+
+[dev-dependencies]
+tempfile.workspace = true
+rusqlite.workspace = true
+serde_json.workspace = true
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]

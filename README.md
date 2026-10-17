@@ -18,6 +18,8 @@ Chrome có thể thay đổi định dạng dữ liệu; ứng dụng từ chố
 gốc được chuyển bằng liên kết. Không hỗ trợ chọn user-data-dir tùy ý, Beta/Canary,
 Edge hoặc tài khoản đồng bộ chính.
 - Không cần mật khẩu Google; không giải mã token; không gửi dữ liệu tài khoản ra mạng.
+Nếu Chrome khóa cơ sở dữ liệu lúc tải danh sách, hãy lưu công việc, thoát Chrome rồi
+nhấn tải lại trong app. Lỗi khóa/truy cập được báo riêng với lỗi định dạng dữ liệu.
 Nếu hệ điều hành chặn đọc dữ liệu, người dùng tự quyết định cấp quyền.
 
 Mọi dữ liệu ví dụ/test đều được tạo giả, chẳng hạn `friend@example.test`.
@@ -35,3 +37,22 @@ trình đã xác minh trên Windows. Nếu có nhiều bản không xác định
 dụng từ chối thao tác. Tiến trình báo lỗi Crashpad trên Mac được ghép với đúng thư mục
 Crashpad; không đóng các Chrome có user-data-dir riêng. Nếu Chrome chạy nền hoặc từ
 chối đóng, hãy lưu công việc và đóng Chrome thủ công rồi thử lại.
+
+## Build và kiểm thử
+
+Cài Rust, Node.js và [phụ thuộc Tauri](https://v2.tauri.app/start/prerequisites/).
+Windows cần MSVC Build Tools; macOS cần Xcode Command Line Tools.
+
+```sh
+npm ci
+npm run check
+npm test -- --run
+npm run build
+cargo test --workspace --locked
+npm run tauri dev
+```
+
+Build giao diện trước các lệnh Cargo biên dịch app. Giao diện được build vào
+`ui-dist/`; `dist/` chỉ dành cho gói phát hành. Không đưa dữ liệu Chrome thật vào test.
+Xác nhận được xử lý ở Rust: token xác nhận chỉ dùng một lần, tài khoản được kiểm tra
+lại trước khi ghi, và chỉ có một thao tác được chạy kể cả khi mở nhiều cửa sổ app.

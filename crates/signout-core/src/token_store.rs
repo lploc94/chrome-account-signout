@@ -4,6 +4,20 @@ use std::{collections::HashSet, path::Path, time::Duration};
 pub(crate) struct TokenStore {
     db: Connection,
 }
+fn schema_error(error: rusqlite::Error) -> Error {
+    // Busy, I/O and permission errors do not establish an unsupported schema.
+    match error {
+        rusqlite::Error::SqliteFailure(ref e, _)
+            if !matches!(
+                e.code,
+                rusqlite::ErrorCode::Unknown | rusqlite::ErrorCode::SchemaChanged
+            ) =>
+        {
+            Error::Storage
+        }
+        _ => Error::Schema,
+    }
+}
 impl TokenStore {
     pub fn open(path: &Path, writable: bool) -> Result<Self> {
         let access = if writable {
@@ -28,7 +42,7 @@ impl TokenStore {
         let mut q = self
             .db
             .prepare("PRAGMA table_xinfo(token_service)")
-            .map_err(|_| Error::Schema)?;
+            .map_err(schema_error)?;
         let rows = q
             .query_map([], |r| {
                 Ok((
@@ -39,11 +53,11 @@ impl TokenStore {
                     r.get::<_, i64>(6)?,
                 ))
             })
-            .map_err(|_| Error::Schema)?;
+            .map_err(schema_error)?;
         let mut columns = HashSet::new();
         let mut key = false;
         for r in rows {
-            let (name, typ, not_null, pk, hidden) = r.map_err(|_| Error::Schema)?;
+            let (name, typ, not_null, pk, hidden) = r.map_err(schema_error)?;
             if hidden != 0 {
                 return Err(Error::Schema);
             };
@@ -67,7 +81,7 @@ impl TokenStore {
         {
             return Err(Error::Schema);
         }
-        let forbidden:i64=self.db.query_row("SELECT count(*) FROM sqlite_master WHERE (type='trigger' AND tbl_name='token_service') OR (name='token_service' AND (type!='table' OR upper(sql) LIKE '%VIRTUAL TABLE%'))",[],|r|r.get(0)).map_err(|_|Error::Schema)?;
+        let forbidden:i64=self.db.query_row("SELECT count(*) FROM sqlite_master WHERE (type='trigger' AND tbl_name='token_service') OR (name='token_service' AND (type!='table' OR upper(sql) LIKE '%VIRTUAL TABLE%'))",[],|r|r.get(0)).map_err(schema_error)?;
         if forbidden != 0 {
             return Err(Error::Schema);
         };

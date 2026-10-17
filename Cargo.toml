@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/signout-core", "crates/chrome-platform"]
+members = ["crates/signout-core", "crates/chrome-platform", "src-tauri"]
 resolver = "2"
 
 [workspace.package]
