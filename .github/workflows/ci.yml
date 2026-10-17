@@ -7,6 +7,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Rust toolchain
+        run: |
+          rustup toolchain install 1.94.0 --profile minimal --component rustfmt,clippy
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          rustup default 1.94.0
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Frontend
         run: |
           npm ci

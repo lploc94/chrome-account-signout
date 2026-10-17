@@ -81,3 +81,7 @@ Trên Windows dùng `python scripts/build-release.py --bundles nsis`.
 Công cụ kiểm tra bản cài Windows giữ cửa sổ app để quan sát. Chỉ chạy lại với
 `-GuiConfirmed -Cleanup` sau khi đã nhìn thấy danh sách hoặc thông báo lỗi có hướng
 dẫn; tùy chọn này xác nhận kiểm tra thủ công, không tự chứng minh GUI hoạt động.
+
+Các thông báo giấy phép thư viện được giữ trong `THIRD-PARTY-NOTICES.txt` và
+được đóng gói cùng app. Danh mục có cả thư viện build và thư viện của hệ khác;
+đây không phải giấy phép áp dụng cho mã nguồn riêng của dự án.

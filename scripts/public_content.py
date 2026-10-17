@@ -35,9 +35,11 @@ def check_bytes(data, private):
         public_text = text.replace(fixture, '/synthetic/Chrome')
         if HOME_PATTERN.search(public_text) or any(s.casefold() in text.casefold() for s in private):
             raise UnsafeContent('private bytes')
+        reviewed = pathlib.Path(__file__).parent/'reviewed-license-files.json'
+        approved_license = reviewed.exists() and hashlib.sha256(data).hexdigest() in json.loads(reviewed.read_text()).values()
         for email in EMAIL_PATTERN.findall(text):
             domain=email.rsplit('@',1)[1].lower()
-            if domain in {'gmail.com','outlook.com','hotmail.com','yahoo.com','icloud.com'}:
+            if not approved_license and domain in {'gmail.com','outlook.com','hotmail.com','yahoo.com','icloud.com'}:
                 raise UnsafeContent('personal email')
 
 
