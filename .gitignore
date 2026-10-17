@@ -1,0 +1,7 @@
+/target/
+/node_modules/
+/ui-dist/
+/dist/
+/.cross-review/
+.DS_Store
+*.log
