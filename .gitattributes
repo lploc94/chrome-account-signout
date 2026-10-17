@@ -1,0 +1,2 @@
+# Keep reviewed dependency-license bytes stable across Windows checkouts.
+THIRD-PARTY-NOTICES.txt text eol=lf
