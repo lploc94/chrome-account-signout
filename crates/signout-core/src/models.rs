@@ -43,7 +43,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
- Self::Metadata=>"Cannot read Chrome profiles. Open Chrome once, then refresh.",
+ Self::Metadata=>"Cannot read Chrome profiles. Check Chrome profile setup and this app's access to Chrome data, then refresh.",
  Self::Identity=>"The account identity changed or this is the primary sync account. Refresh and try again.",
  Self::Path=>"The Chrome data path is unsafe or unavailable.",
  Self::Schema=>"This Chrome data format is not supported.",
