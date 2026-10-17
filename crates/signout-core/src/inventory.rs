@@ -39,9 +39,7 @@ pub fn safe_child(root: &Path, relative: &Path) -> Result<PathBuf> {
     let resolved = fs::canonicalize(&current).map_err(|_| Error::Path)?;
     // Both sides share the canonical root and actual on-disk component spelling. On Windows
     // canonicalize applies a verbatim prefix consistently; a mismatch is refused, never guessed.
-    let expected = fs::canonicalize(current.parent().ok_or(Error::Path)?)
-        .map_err(|_| Error::Path)?
-        .join(current.file_name().ok_or(Error::Path)?);
+    let expected = root.join(relative);
     if resolved != expected {
         return Err(Error::Path);
     }

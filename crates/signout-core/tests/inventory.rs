@@ -87,3 +87,9 @@ fn relocated_root_supported() {
         3
     );
 }
+
+#[test]
+fn intermediate_folder_spelling_cannot_alias_another_selection() {
+    let f = Fixture::new();
+    assert!(f.inventory().safe_file("dEfAuLt", "Web Data").is_err());
+}

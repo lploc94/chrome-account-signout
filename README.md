@@ -29,3 +29,9 @@ tách riêng. Bản Swift cũ không phải phụ thuộc của ứng dụng nà
 
 Dự án đang được chuyển đổi; hướng dẫn build và gói tải xuống được hoàn thiện sau khi
 kiểm tra native trên từng hệ điều hành. Không có telemetry hoặc tự động cập nhật.
+
+Chrome được tìm qua đăng ký ứng dụng/tiến trình đang chạy trên macOS và App Paths/tiến
+trình đã xác minh trên Windows. Nếu có nhiều bản không xác định được chủ profile, ứng
+dụng từ chối thao tác. Tiến trình báo lỗi Crashpad trên Mac được ghép với đúng thư mục
+Crashpad; không đóng các Chrome có user-data-dir riêng. Nếu Chrome chạy nền hoặc từ
+chối đóng, hãy lưu công việc và đóng Chrome thủ công rồi thử lại.

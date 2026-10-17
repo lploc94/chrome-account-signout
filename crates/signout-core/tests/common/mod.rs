@@ -3,6 +3,7 @@ use rusqlite::Connection;
 use serde_json::json;
 use signout_core::{Inventory, Selection};
 use std::path::PathBuf;
+pub type FullRow = (String, Vec<u8>, Option<Vec<u8>>, Option<i64>);
 pub struct Fixture {
     pub temp: tempfile::TempDir,
     pub root: PathBuf,
@@ -46,6 +47,9 @@ impl Fixture {
             .unwrap()
             .clone();
         Selection { profile, account }
+    }
+    pub fn full_rows(&self) -> Vec<FullRow> {
+        self.db().prepare("SELECT service,encrypted_token,binding_key,mtls_token_binding FROM token_service ORDER BY service").unwrap().query_map([],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?))).unwrap().map(Result::unwrap).collect()
     }
     pub fn rows(&self) -> Vec<(String, Vec<u8>)> {
         self.db()

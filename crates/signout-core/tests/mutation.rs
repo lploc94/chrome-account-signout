@@ -5,6 +5,7 @@ use signout_core::{Removal, remove};
 fn exact_row_and_metadata_preserved() {
     let f = Fixture::new();
     let mut rows = f.rows();
+    let mut all_columns = f.full_rows();
     let prefs = std::fs::read(f.root.join("Default/Preferences")).unwrap();
     assert_eq!(
         remove(
@@ -19,6 +20,8 @@ fn exact_row_and_metadata_preserved() {
     );
     rows.retain(|(k, _)| k != "AccountId-target");
     assert_eq!(rows, f.rows());
+    all_columns.retain(|row| row.0 != "AccountId-target");
+    assert_eq!(all_columns, f.full_rows());
     assert_eq!(
         prefs,
         std::fs::read(f.root.join("Default/Preferences")).unwrap()

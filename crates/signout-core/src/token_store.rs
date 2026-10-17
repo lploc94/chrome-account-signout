@@ -113,10 +113,15 @@ impl TokenStore {
             };
             before_commit()?;
             validate()?;
-            if self.db.execute_batch("COMMIT").is_err()
-                && !(self.db.is_autocommit() && !self.contains(key)?)
-            {
-                return Err(Error::Storage);
+            if self.db.execute_batch("COMMIT").is_err() {
+                if !self.db.is_autocommit() {
+                    return Err(Error::Storage);
+                }
+                match self.contains(key) {
+                    Ok(false) => {}
+                    Ok(true) => return Err(Error::Storage),
+                    Err(_) => return Err(Error::OutcomeUnknown),
+                }
             }
             Ok(if count == 0 {
                 Removal::AlreadyRemoved

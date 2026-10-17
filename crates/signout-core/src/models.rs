@@ -37,6 +37,7 @@ pub enum Error {
     AmbiguousChrome,
     Process,
     Cancelled,
+    OutcomeUnknown,
 }
 pub type Result<T> = std::result::Result<T, Error>;
 impl std::fmt::Display for Error {
@@ -52,6 +53,7 @@ impl std::fmt::Display for Error {
  Self::MissingChrome=>"Không tìm thấy Google Chrome stable. Hãy mở Chrome rồi tải lại.",
  Self::AmbiguousChrome=>"Có nhiều bản Chrome; không xác định được bản đang dùng hồ sơ. Hãy đóng Chrome rồi thử lại.",
  Self::Process=>"Không xác định được tiến trình Chrome. Hãy đóng Chrome thủ công rồi thử lại.",
+ Self::OutcomeUnknown=>"Không xác định được kết quả ghi dữ liệu. Hãy tải lại và kiểm tra Chrome.",
  Self::Cancelled=>"Đã hủy thao tác; chưa gỡ tài khoản."
  })
     }

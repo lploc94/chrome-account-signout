@@ -5,3 +5,4 @@
 /.cross-review/
 .DS_Store
 *.log
+/ci-artifact/
