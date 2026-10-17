@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="650" viewBox="0 0 1280 650" role="img" aria-labelledby="title description">
+  <title id="title">Chrome Account Signout interface mockup</title>
+  <desc id="description">Two illustrative screens with fictional accounts: choose a secondary account from the list, then confirm logout. The primary sync account is protected.</desc>
+  <defs>
+    <g id="app-window">
+      <rect x="2" y="5" width="580" height="450" rx="13" fill="#20344f" opacity=".08"/>
+      <rect width="580" height="450" rx="12" fill="#f7f8fa" stroke="#d8dfe9"/>
+      <path d="M12 0H568Q580 0 580 12V28H0V12Q0 0 12 0" fill="#edf0f5"/>
+      <path d="M0 28H580" stroke="#d8dfe9"/>
+      <g fill="#bdc6d2">
+        <circle cx="18" cy="14" r="4"/>
+        <circle cx="32" cy="14" r="4"/>
+        <circle cx="46" cy="14" r="4"/>
+      </g>
+      <text x="290" y="18" text-anchor="middle" font-size="11" fill="#6c7480">Chrome Account Signout</text>
+      <text x="26" y="79" font-size="21" font-weight="650" letter-spacing="-.4" fill="#20252d">Chrome Account Signout</text>
+      <text x="26" y="103" font-size="12" fill="#6c7480">Accounts are listed from Chrome profile data and may be out of date.</text>
+      <rect x="486" y="61" width="68" height="30" rx="8" fill="#fff" stroke="#d9dee6"/>
+      <text x="520" y="81" text-anchor="middle" font-size="12" fill="#344054">Refresh</text>
+      <text x="26" y="148" font-size="12" letter-spacing=".8" fill="#747e8b">EXAMPLE PROFILE</text>
+      <rect x="26" y="164" width="528" height="230" rx="12" fill="#fff" stroke="#e4e8ee"/>
+      <path d="M26 250H554M26 322H554" stroke="#e4e8ee"/>
+      <g fill="#edf1fb">
+        <circle cx="58" cy="207" r="18"/>
+        <circle cx="58" cy="286" r="18"/>
+        <circle cx="58" cy="358" r="18"/>
+      </g>
+      <g fill="#526baf" font-size="14" font-weight="600" text-anchor="middle">
+        <text x="58" y="212">A</text>
+        <text x="58" y="291">S</text>
+        <text x="58" y="363">J</text>
+      </g>
+      <g fill="#20252d" font-size="14" font-weight="550">
+        <text x="88" y="190">Alex Example</text>
+        <text x="88" y="276">Sam Example</text>
+        <text x="88" y="348">Jamie Example</text>
+      </g>
+      <g fill="#697586" font-size="12">
+        <text x="88" y="210">alex@example.test</text>
+        <text x="88" y="297">sam@example.test</text>
+        <text x="88" y="369">jamie@example.test</text>
+      </g>
+      <text x="88" y="228" font-size="10" fill="#738096">Primary sync account</text>
+      <g opacity=".42">
+        <rect x="470" y="192" width="70" height="30" rx="8" fill="#fff" stroke="#efd9d6"/>
+        <text x="505" y="212" text-anchor="middle" font-size="12" fill="#c0443b">Log out</text>
+      </g>
+      <g fill="#fff" stroke="#efd9d6">
+        <rect x="470" y="271" width="70" height="30" rx="8"/>
+        <rect x="470" y="343" width="70" height="30" rx="8"/>
+      </g>
+      <g text-anchor="middle" font-size="12" fill="#c0443b">
+        <text x="505" y="291">Log out</text>
+        <text x="505" y="363">Log out</text>
+      </g>
+      <text x="26" y="426" font-size="12" fill="#6c7480">Chrome closes only after you confirm logout.</text>
+    </g>
+  </defs>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+    <rect width="1280" height="650" rx="20" fill="#f0f4fa"/>
+    <text x="40" y="47" font-size="25" font-weight="700" fill="#202b3c">Chrome Account Signout</text>
+    <text x="40" y="75" font-size="15" fill="#65738a">Choose a secondary account, then confirm.</text>
+    <g font-size="14" font-weight="600" fill="#526baf">
+      <text x="40" y="117">01  Account list</text>
+      <text x="660" y="117">02  Confirmation</text>
+    </g>
+    <use href="#app-window" x="40" y="142"/>
+    <use href="#app-window" x="660" y="142"/>
+    <path d="M660 170H1240V580Q1240 592 1228 592H672Q660 592 660 580Z" fill="#17212c" opacity=".34"/>
+    <rect x="742" y="281" width="420" height="230" rx="14" fill="#17212c" opacity=".12"/>
+    <rect x="740" y="278" width="420" height="230" rx="14" fill="#fff" stroke="#dfe3e9"/>
+    <text x="764" y="312" font-size="18" font-weight="650" fill="#20252d">Log out this account?</text>
+    <text x="764" y="346" font-size="13" font-weight="600" fill="#25344a">sam@example.test</text>
+    <g font-size="13" fill="#6c7480">
+      <text x="764" y="379">Chrome will close and reopen.</text>
+      <text x="764" y="400">Other accounts will be kept.</text>
+    </g>
+    <rect x="926" y="450" width="74" height="34" rx="8" fill="#fff" stroke="#d9dee6"/>
+    <text x="963" y="472" text-anchor="middle" font-size="13" fill="#344054">Cancel</text>
+    <rect x="1010" y="450" width="126" height="34" rx="8" fill="#bd4238"/>
+    <text x="1073" y="472" text-anchor="middle" font-size="13" fill="#fff">Confirm logout</text>
+    <text x="40" y="627" font-size="13" fill="#65738a">Illustrative mockup. All names and email addresses are fictional.</text>
+  </g>
+</svg>

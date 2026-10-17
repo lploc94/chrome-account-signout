@@ -3,5 +3,6 @@
   "src-tauri/icons/icon.icns": "000d589a7968808bea52180d30e46d2e77ebf30b3184641e664af579425d02ea",
   "src-tauri/icons/app.svg": "8898bdb853d180669ef35d742d391eae0bb0b8a63c908988c43bdc5c7b0ccf3c",
   "src-tauri/icons/icon.ico": "e8ae7ca03d0a694b3579bace68b1d25fff9d2e28b6928725259e29f4d814ed99",
-  "upstream/nsis-3.13/Contrib/Graphics/Wizard/win.bmp": "3ad2dc318056d0a2024af1804ea741146cfc18cc404649a44610cbf8b2056cf2"
+  "upstream/nsis-3.13/Contrib/Graphics/Wizard/win.bmp": "3ad2dc318056d0a2024af1804ea741146cfc18cc404649a44610cbf8b2056cf2",
+  "docs/images/account-signout-preview.svg": "677c8c1ebae6454c9c8dc974c6553d411940a8d7da6d0de2072e7ed7aca83f0b"
 }

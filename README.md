@@ -6,6 +6,8 @@ Account list → **Log out** next to an account → confirmation → result.
 The app asks Chrome to close normally, removes the selected local account token,
 and reopens the profile. The primary sync account is protected. There is no restore feature.
 
+![Illustrative account list and logout confirmation using fictional accounts](docs/images/account-signout-preview.svg)
+
 This changes local data only; it does not revoke Google sessions on other devices.
 Chrome may change its data format. The app refuses to proceed if it cannot verify
 the account, database schema, paths, or processes using the profile.
@@ -78,7 +80,8 @@ The manifest records the source commit and each package and executable hash.
 Windows payload inspection requires `7zz` or `7z`; failure to extract blocks verification.
 PDB files, source maps, browser data, and account screenshots are excluded from releases.
 
-The reviewed image hash list contains the app icons and the default wizard artwork,
+The reviewed image hash list contains the app icons, the synthetic README mockup,
+and the default wizard artwork,
 `Contrib/Graphics/Wizard/win.bmp`, from [Tauri's NSIS 3.13 distribution](https://github.com/tauri-apps/binary-releases/releases/tag/nsis-3.13).
 The NSIS image was matched byte for byte against the official package and visually
 inspected. Only that exact hash is accepted; unreviewed images remain blocked.
