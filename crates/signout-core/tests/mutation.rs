@@ -131,3 +131,21 @@ fn sql_shaped_identity_is_a_literal_key() {
     assert_eq!(f.rows().len(), 2);
     assert!(f.rows().iter().any(|(key, _)| key == "AccountId-primary"));
 }
+
+#[test]
+fn non_binary_or_composite_primary_key_is_refused_without_touching_rows() {
+    for key in [
+        "PRIMARY KEY(service COLLATE NOCASE)",
+        "PRIMARY KEY(service,binding_key)",
+    ] {
+        let f = Fixture::new();
+        let selection = f.selection("target");
+        let db = f.db();
+        db.execute_batch(&format!("ALTER TABLE token_service RENAME TO original; CREATE TABLE token_service(service VARCHAR NOT NULL,encrypted_token BLOB,binding_key BLOB,mtls_token_binding INTEGER,{key}); INSERT INTO token_service SELECT * FROM original; DROP TABLE original;")).unwrap();
+        let before = f.full_rows();
+        let result =
+            signout_core::remove(&f.inventory(), &selection, &Guard, &|| Ok(true), &|| Ok(()));
+        assert_eq!(result, Err(signout_core::Error::Schema));
+        assert_eq!(f.full_rows(), before);
+    }
+}

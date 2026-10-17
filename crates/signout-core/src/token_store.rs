@@ -65,7 +65,9 @@ impl TokenStore {
                 key = not_null == 1
                     && pk == 1
                     && matches!(typ.to_ascii_uppercase().as_str(), "TEXT" | "VARCHAR")
-            };
+            } else if pk != 0 {
+                return Err(Error::Schema);
+            }
             columns.insert(name);
         }
         let required = ["service", "encrypted_token"];
@@ -79,6 +81,19 @@ impl TokenStore {
             || !required.iter().all(|k| columns.contains(*k))
             || columns.iter().any(|k| !allowed.contains(&k.as_str()))
         {
+            return Err(Error::Schema);
+        }
+        // SQLite equality inherits a column/index collation. Refuse case-folding
+        // keys so a bound literal can never match a different account's key.
+        let mut indexes = self.db.prepare(
+            "SELECT ix.name, ix.coll FROM pragma_index_list('token_service') il JOIN pragma_index_xinfo(il.name) ix WHERE il.origin='pk' AND ix.key=1",
+        ).map_err(schema_error)?;
+        let keys = indexes
+            .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+            .map_err(schema_error)?
+            .collect::<std::result::Result<Vec<_>, _>>()
+            .map_err(schema_error)?;
+        if keys != [("service".into(), "BINARY".into())] {
             return Err(Error::Schema);
         }
         let forbidden:i64=self.db.query_row("SELECT count(*) FROM sqlite_master WHERE (type='trigger' AND tbl_name='token_service') OR (name='token_service' AND (type!='table' OR upper(sql) LIKE '%VIRTUAL TABLE%'))",[],|r|r.get(0)).map_err(schema_error)?;
@@ -99,9 +114,11 @@ impl TokenStore {
     }
     fn contains(&self, key: &str) -> Result<bool> {
         self.db
-            .query_row("SELECT 1 FROM token_service WHERE service=?1", [key], |r| {
-                r.get::<_, i64>(0)
-            })
+            .query_row(
+                "SELECT 1 FROM token_service WHERE service=?1 COLLATE BINARY",
+                [key],
+                |r| r.get::<_, i64>(0),
+            )
             .optional()
             .map(|r| r.is_some())
             .map_err(|_| Error::Storage)
@@ -120,7 +137,10 @@ impl TokenStore {
             validate()?;
             let count = self
                 .db
-                .execute("DELETE FROM token_service WHERE service=?1", [key])
+                .execute(
+                    "DELETE FROM token_service WHERE service=?1 COLLATE BINARY",
+                    [key],
+                )
                 .map_err(|_| Error::Storage)?;
             if count > 1 {
                 return Err(Error::Schema);
