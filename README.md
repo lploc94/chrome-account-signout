@@ -70,6 +70,11 @@ khi upload. Manifest ghi commit nguồn và hash của từng gói/binary. Công
 payload Windows cần `7zz` hoặc `7z`; không giải nén được thì kiểm tra thất bại.
 Không đưa PDB, source map, dữ liệu trình duyệt hoặc ảnh tài khoản vào bản phát hành.
 
+Danh sách hash ảnh được duyệt gồm icon của ứng dụng và ảnh nền wizard mặc định
+`Contrib/Graphics/Wizard/win.bmp` từ [NSIS 3.13 do Tauri phân phối](https://github.com/tauri-apps/binary-releases/releases/tag/nsis-3.13).
+Ảnh NSIS được đối chiếu từng byte với gói chính thức và kiểm tra trực quan;
+chỉ đúng hash này được chấp nhận, các ảnh chưa được duyệt vẫn bị chặn.
+
 Build phát hành với đường dẫn nguồn đã chuẩn hóa:
 
 ```sh
