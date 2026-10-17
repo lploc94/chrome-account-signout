@@ -16,7 +16,7 @@ class UnsafeContent(RuntimeError): pass
 HOME_PATTERN = re.compile(r'(?:/Us' + r'ers/|[A-Za-z]:[\\/]+Us' + r'ers[\\/]+)[^\s\x00/\\]+', re.I)
 EMAIL_PATTERN = re.compile(r'[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}', re.I)
 FORBIDDEN = {'Web Data','Cookies','Login Data','Local State','Preferences','.cross-review','.DS_Store','node_modules','target','__pycache__'}
-IMAGE_SUFFIXES = {'.png','.jpg','.jpeg','.webp','.gif','.icns','.ico'}
+IMAGE_SUFFIXES = {'.png','.jpg','.jpeg','.webp','.gif','.icns','.ico','.svg','.bmp','.tif','.tiff','.avif','.heic'}
 
 
 def markers():
@@ -86,12 +86,19 @@ def scan_git(root, private, history=False):
     return len(seen)
 
 
+def check_image(name,data):
+    if pathlib.PurePosixPath(name).suffix.lower() not in IMAGE_SUFFIXES:return
+    hashes=json.loads((pathlib.Path(__file__).parent/'reviewed-icons.json').read_text())
+    if hashlib.sha256(data).hexdigest() not in hashes.values():raise UnsafeContent('unreviewed payload image')
+
+
 def scan_tree(root,private):
     count=0
     for path in root.rglob('*'):
         if path.is_symlink():raise UnsafeContent('linked payload')
         if path.is_file():
-            check_name(path.relative_to(root).as_posix());check_bytes(path.read_bytes(),private);count+=1
+            name=path.relative_to(root).as_posix();data=path.read_bytes()
+            check_name(name);check_bytes(data,private);check_image(name,data);count+=1
     return count
 
 
@@ -104,7 +111,7 @@ def scan_artifact(path, private):
                 check_name(item.filename)
                 if stat.S_ISLNK(item.external_attr >> 16):raise UnsafeContent('linked archive entry')
                 if not item.is_dir():
-                    content=archive.read(item);check_bytes(content,private)
+                    content=archive.read(item);check_bytes(content,private);check_image(item.filename,content)
                     if zipfile.is_zipfile(io.BytesIO(content)):
                         with tempfile.TemporaryDirectory(prefix='signout-nested-') as d:
                             nested=pathlib.Path(d)/'nested.zip';nested.write_bytes(content)

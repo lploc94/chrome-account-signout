@@ -61,3 +61,9 @@ class PrivacyTests(unittest.TestCase):
             outer=pathlib.Path(d)/'outer.zip'
             with zipfile.ZipFile(outer,'w',compression=zipfile.ZIP_DEFLATED) as z:z.writestr('nested.zip',inner.getvalue())
             with self.assertRaises(audit.UnsafeContent):audit.scan_artifact(outer, [])
+
+    def test_unreviewed_images_are_rejected_inside_packages(self):
+        with tempfile.TemporaryDirectory() as d:
+            p=pathlib.Path(d)/'release.zip'
+            with zipfile.ZipFile(p,'w') as z:z.writestr('App/Contents/Resources/screenshot.png',b'no private strings but an unreviewed image')
+            with self.assertRaises(audit.UnsafeContent):audit.scan_artifact(p, [])

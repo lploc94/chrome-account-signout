@@ -342,8 +342,10 @@ pub fn perform(
             return Err(Error::Identity);
         }
         let was_running = browser.was_running()?;
+        let mut closed = false;
         let operation = (|| {
             browser.close(cancel)?;
+            closed = true;
             mutating()?;
             let stopped = || {
                 validate_root()?;
@@ -369,7 +371,10 @@ pub fn perform(
             }
             Err(e) => {
                 let mut outcome = Outcome::failed(e);
-                if was_running && browser.reopen(&binding.selection.profile.folder).is_err() {
+                if was_running
+                    && closed
+                    && browser.reopen(&binding.selection.profile.folder).is_err()
+                {
                     outcome.message.push_str(" Hãy tự mở lại Chrome.");
                 }
                 Ok(outcome)

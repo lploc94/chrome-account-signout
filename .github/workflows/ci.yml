@@ -34,6 +34,14 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cargo test --workspace --locked
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Publication and qualification regression checks
+        run: |
+          python -m unittest discover -s tests -p test_public_content.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/check-public-content.py --source --history
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          pwsh -NoProfile -File tests/test-windows-qualification.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Installer
         run: python scripts/build-release.py --bundles nsis
       - name: Collect release inputs

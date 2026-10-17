@@ -98,6 +98,7 @@ fn close_refusal_cancel_and_commit_failure_preserve_rows() {
             &|| Ok(()),
         );
         assert_eq!(f.rows(), before);
+        assert_eq!(b.opened.load(Ordering::Acquire), mode == 2);
         assert!(result.message.contains("Chưa gỡ") || result.message.contains("chưa gỡ"));
     }
 }
