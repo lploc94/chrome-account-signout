@@ -9,7 +9,7 @@ mod commands {
         let e = engine.inner().clone();
         tauri::async_runtime::spawn_blocking(move || e.list().map_err(|e| e.to_string()))
             .await
-            .map_err(|_| "Không tải được tài khoản.".to_string())?
+            .map_err(|_| "Unable to load accounts.".to_string())?
     }
     #[tauri::command]
     pub fn prepare_logout(
@@ -95,7 +95,7 @@ pub fn run() {
             }
         })
         .build(tauri::generate_context!())
-        .expect("Không khởi động được cửa sổ ứng dụng");
+        .expect("Could not open the application window");
     app.run(|app, event| {
         if let tauri::RunEvent::ExitRequested { api, .. } = event
             && defer_exit(app.clone())

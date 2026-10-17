@@ -43,18 +43,18 @@ pub type Result<T> = std::result::Result<T, Error>;
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
- Self::Metadata=>"Không đọc được hồ sơ Chrome. Hãy mở Chrome một lần rồi tải lại.",
- Self::Identity=>"Danh tính tài khoản đã thay đổi hoặc đây là tài khoản đồng bộ chính. Hãy tải lại.",
- Self::Path=>"Đường dẫn dữ liệu không an toàn hoặc không truy cập được.",
- Self::Schema=>"Định dạng dữ liệu Chrome này chưa được hỗ trợ.",
- Self::Storage=>"Không truy cập được cơ sở dữ liệu Chrome. Hãy đóng Chrome rồi thử lại.",
- Self::Running=>"Chrome vẫn đang chạy; chưa thay đổi tài khoản. Hãy đóng Chrome thủ công rồi thử lại.",
- Self::Busy=>"Một thao tác đăng xuất khác đang chạy. Hãy chờ hoàn tất.",
- Self::MissingChrome=>"Không tìm thấy Google Chrome stable. Hãy mở Chrome rồi tải lại.",
- Self::AmbiguousChrome=>"Có nhiều bản Chrome; không xác định được bản đang dùng hồ sơ. Hãy đóng Chrome rồi thử lại.",
- Self::Process=>"Không xác định được tiến trình Chrome. Hãy đóng Chrome thủ công rồi thử lại.",
- Self::OutcomeUnknown=>"Không xác định được kết quả ghi dữ liệu. Hãy tải lại và kiểm tra Chrome.",
- Self::Cancelled=>"Đã hủy thao tác; chưa gỡ tài khoản."
+ Self::Metadata=>"Cannot read Chrome profiles. Open Chrome once, then refresh.",
+ Self::Identity=>"The account identity changed or this is the primary sync account. Refresh and try again.",
+ Self::Path=>"The Chrome data path is unsafe or unavailable.",
+ Self::Schema=>"This Chrome data format is not supported.",
+ Self::Storage=>"Cannot access Chrome's database. Close Chrome and try again.",
+ Self::Running=>"Chrome is still running. No account was changed. Close Chrome manually and try again.",
+ Self::Busy=>"Another logout operation is running. Wait for it to finish.",
+ Self::MissingChrome=>"Google Chrome stable was not found. Open Chrome and refresh.",
+ Self::AmbiguousChrome=>"Multiple Chrome installations found. Cannot identify the one using this profile. Close Chrome and try again.",
+ Self::Process=>"Cannot identify Chrome processes. Close Chrome manually and try again.",
+ Self::OutcomeUnknown=>"Could not confirm whether the data change was saved. Refresh and check Chrome.",
+ Self::Cancelled=>"Cancelled. No account was removed."
  })
     }
 }

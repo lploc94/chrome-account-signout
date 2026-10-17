@@ -2,7 +2,7 @@
 
 Ứng dụng desktop nhỏ để gỡ một tài khoản Google phụ khỏi Chrome trên máy của bạn.
 
-Danh sách tài khoản → **Logout** bên cạnh tài khoản → xác nhận → kết quả.
+Danh sách tài khoản → **Log out** bên cạnh tài khoản → xác nhận → kết quả.
 Ứng dụng đóng Chrome một cách bình thường, gỡ đúng token cục bộ rồi mở lại profile.
 Tài khoản đồng bộ chính được bảo vệ. Không có chức năng khôi phục.
 
@@ -87,3 +87,5 @@ dẫn; tùy chọn này xác nhận kiểm tra thủ công, không tự chứng 
 Các thông báo giấy phép thư viện được giữ trong `THIRD-PARTY-NOTICES.txt` và
 được đóng gói cùng app. Danh mục có cả thư viện build và thư viện của hệ khác;
 đây không phải giấy phép áp dụng cho mã nguồn riêng của dự án.
+
+Giao diện ứng dụng và thông báo kết quả/lỗi sử dụng tiếng Anh.

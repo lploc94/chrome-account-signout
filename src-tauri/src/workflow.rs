@@ -62,9 +62,9 @@ impl Outcome {
         Self {
             phase: "done",
             message: if reopened {
-                "Đã gỡ tài khoản trên máy này. Kiểm tra Chrome để xác nhận."
+                "Account removed from this device. Check Chrome to confirm."
             } else {
-                "Đã gỡ tài khoản trên máy này. Chưa mở lại được Chrome; hãy tự mở và kiểm tra."
+                "Account removed from this device. Chrome could not reopen; open it manually and check."
             }
             .into(),
         }
@@ -81,7 +81,7 @@ impl Outcome {
             },
             _ => Self {
                 phase: "error",
-                message: format!("Chưa gỡ tài khoản. {error}"),
+                message: format!("No account was removed. {error}"),
             },
         }
     }
@@ -198,7 +198,7 @@ impl Engine {
                 status: Status {
                     id: id.clone(),
                     phase: "waiting".into(),
-                    message: "Đang chờ Chrome đóng…".into(),
+                    message: "Waiting for Chrome to close…".into(),
                 },
                 cancel: cancel.clone(),
             });
@@ -220,7 +220,7 @@ impl Engine {
                         return Err(Error::Cancelled);
                     };
                     op.status.phase = "mutating".into();
-                    op.status.message = "Đang gỡ tài khoản và mở lại Chrome…".into();
+                    op.status.message = "Removing account and reopening Chrome…".into();
                     Ok(())
                 };
                 let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
@@ -359,11 +359,11 @@ pub fn perform(
                 let mut outcome = Outcome::removed(reopened);
                 if removal == Removal::AlreadyRemoved {
                     outcome.message = format!(
-                        "Tài khoản đã được gỡ trước đó. {}",
+                        "This account was already removed. {}",
                         if reopened {
-                            "Kiểm tra Chrome để xác nhận."
+                            "Check Chrome to confirm."
                         } else {
-                            "Hãy tự mở Chrome và kiểm tra."
+                            "Open Chrome manually and check."
                         }
                     );
                 }
@@ -375,7 +375,7 @@ pub fn perform(
                     && closed
                     && browser.reopen(&binding.selection.profile.folder).is_err()
                 {
-                    outcome.message.push_str(" Hãy tự mở lại Chrome.");
+                    outcome.message.push_str(" Open Chrome manually.");
                 }
                 Ok(outcome)
             }

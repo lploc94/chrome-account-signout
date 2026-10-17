@@ -62,8 +62,8 @@ fn committed_removal_survives_reopen_failure() {
         &|| Ok(()),
     );
     assert_eq!(result.phase, "done");
-    assert!(result.message.contains("Đã gỡ"));
-    assert!(result.message.contains("Chưa mở lại"));
+    assert!(result.message.contains("Account removed"));
+    assert!(result.message.contains("Chrome could not reopen"));
     assert_eq!(f.rows().len(), 2);
 }
 #[test]
@@ -99,7 +99,7 @@ fn close_refusal_cancel_and_commit_failure_preserve_rows() {
         );
         assert_eq!(f.rows(), before);
         assert_eq!(b.opened.load(Ordering::Acquire), mode == 2);
-        assert!(result.message.contains("Chưa gỡ") || result.message.contains("chưa gỡ"));
+        assert!(result.message.contains("No account was removed"));
     }
 }
 struct Blocking {
@@ -168,7 +168,7 @@ fn window_exit_cancels_waiting_but_defers_during_commit() {
 fn unknown_result_never_claims_no_change() {
     let o = Outcome::failed(Error::OutcomeUnknown);
     assert_eq!(o.phase, "unknown");
-    assert!(!o.message.contains("Chưa gỡ"));
+    assert!(!o.message.contains("No account was removed"));
 }
 
 #[test]
@@ -267,7 +267,7 @@ fn cached_selection_closes_before_database_access_and_revalidates_after_close() 
         } else {
             assert_eq!(result.phase, "done");
             if selection_id == "expired" {
-                assert!(result.message.contains("đã được gỡ trước đó"));
+                assert!(result.message.contains("was already removed"));
                 assert_eq!(b.fixture.full_rows(), before);
             } else {
                 assert_eq!(
