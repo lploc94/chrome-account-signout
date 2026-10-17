@@ -10,16 +10,23 @@ jobs:
       - name: Frontend
         run: |
           npm ci
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           npm run check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           npm test -- --run
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           npm run build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Rust checks
         run: |
           cargo fmt --all -- --check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cargo clippy --workspace --all-targets --locked -- -D warnings
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cargo test --workspace --locked
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Installer
-        run: npm run tauri build -- --bundles nsis
+        run: python scripts/build-release.py --bundles nsis
       - name: Collect release inputs
         run: python scripts/collect-windows-ci.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

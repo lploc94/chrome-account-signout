@@ -29,8 +29,7 @@ Mọi dữ liệu ví dụ/test đều được tạo giả, chẳng hạn `frie
 Tauri 2, Rust và TypeScript/CSS. Phần xử lý tài khoản dùng chung; tích hợp hệ điều hành
 tách riêng. Bản Swift cũ không phải phụ thuộc của ứng dụng này.
 
-Dự án đang được chuyển đổi; hướng dẫn build và gói tải xuống được hoàn thiện sau khi
-kiểm tra native trên từng hệ điều hành. Không có telemetry hoặc tự động cập nhật.
+Không có telemetry hoặc tự động cập nhật.
 
 Chrome được tìm qua đăng ký ứng dụng/tiến trình đang chạy trên macOS và App Paths/tiến
 trình đã xác minh trên Windows. Nếu có nhiều bản không xác định được chủ profile, ứng
@@ -56,3 +55,29 @@ Build giao diện trước các lệnh Cargo biên dịch app. Giao diện đư�
 `ui-dist/`; `dist/` chỉ dành cho gói phát hành. Không đưa dữ liệu Chrome thật vào test.
 Xác nhận được xử lý ở Rust: token xác nhận chỉ dùng một lần, tài khoản được kiểm tra
 lại trước khi ghi, và chỉ có một thao tác được chạy kể cả khi mở nhiều cửa sổ app.
+
+## Phát hành
+
+Gói macOS dùng chữ ký ad-hoc, chưa được Apple notarize. Gói Windows chưa có chữ ký
+nhà phát hành; Windows vẫn là bản thử nghiệm cho đến khi có kiểm tra đăng xuất thực tế.
+Installer Windows cài cho người dùng hiện tại và cần Microsoft Edge WebView2 Runtime.
+Không tự cấp quyền đọc dữ liệu hoặc thay đổi thiết lập bảo mật của hệ điều hành.
+
+Gói phát hành phải qua kiểm tra nội dung riêng tư, SHA-256 và kiểm tra native trước
+khi upload. Manifest ghi commit nguồn và hash của từng gói/binary. Công cụ kiểm tra
+payload Windows cần `7zz` hoặc `7z`; không giải nén được thì kiểm tra thất bại.
+Không đưa PDB, source map, dữ liệu trình duyệt hoặc ảnh tài khoản vào bản phát hành.
+
+Build phát hành với đường dẫn nguồn đã chuẩn hóa:
+
+```sh
+python3 scripts/build-release.py --target universal-apple-darwin --bundles app
+python3 scripts/package-release.py --platform macos
+python3 scripts/check-public-content.py --source --history --artifacts dist
+python3 scripts/verify-release.py --dir dist
+```
+
+Trên Windows dùng `python scripts/build-release.py --bundles nsis`.
+Công cụ kiểm tra bản cài Windows giữ cửa sổ app để quan sát. Chỉ chạy lại với
+`-GuiConfirmed -Cleanup` sau khi đã nhìn thấy danh sách hoặc thông báo lỗi có hướng
+dẫn; tùy chọn này xác nhận kiểm tra thủ công, không tự chứng minh GUI hoạt động.
